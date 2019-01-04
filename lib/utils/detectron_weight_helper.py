@@ -18,7 +18,10 @@ def load_detectron_weight(net, detectron_weight_file):
     for p_name, p_tensor in params.items():
         d_name = name_mapping[p_name]
         if isinstance(d_name, str):  # maybe str, None or True
-            p_tensor.copy_(torch.Tensor(src_blobs[d_name]))
+            try:
+                p_tensor.copy_(torch.Tensor(src_blobs[d_name]))
+            except RuntimeError:
+                print("Not loaded from detectron:", d_name)
 
 
 def resnet_weights_name_pattern():

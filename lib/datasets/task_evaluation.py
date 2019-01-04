@@ -49,26 +49,45 @@ import datasets.voc_dataset_evaluator as voc_dataset_evaluator
 logger = logging.getLogger(__name__)
 
 
+# def evaluate_all(
+#     dataset, all_boxes, all_segms, all_keyps, output_dir, use_matlab=False
+# ):
+#     """Evaluate "all" tasks, where "all" includes box detection, instance
+#     segmentation, and keypoint detection.
+#     """
+#     all_results = evaluate_boxes(
+#         dataset, all_boxes, output_dir, use_matlab=use_matlab
+#     )
+#     logger.info('Evaluating bounding boxes is done!')
+#     if cfg.MODEL.MASK_ON:
+#         results = evaluate_masks(dataset, all_boxes, all_segms, output_dir)
+#         all_results[dataset.name].update(results[dataset.name])
+#         logger.info('Evaluating segmentations is done!')
+#     if cfg.MODEL.KEYPOINTS_ON:
+#         results = evaluate_keypoints(dataset, all_boxes, all_keyps, output_dir)
+#         all_results[dataset.name].update(results[dataset.name])
+#         logger.info('Evaluating keypoints is done!')
+#     return all_results
+
 def evaluate_all(
     dataset, all_boxes, all_segms, all_keyps, output_dir, use_matlab=False
 ):
     """Evaluate "all" tasks, where "all" includes box detection, instance
     segmentation, and keypoint detection.
     """
-    all_results = evaluate_boxes(
+    all_results = evaluate_keypoints(
+        dataset, all_boxes, all_keyps, output_dir)
+    logger.info('Evaluating keypoints is done!')
+    results = evaluate_boxes(
         dataset, all_boxes, output_dir, use_matlab=use_matlab
     )
+    all_results[dataset.name].update(results[dataset.name])
     logger.info('Evaluating bounding boxes is done!')
     if cfg.MODEL.MASK_ON:
         results = evaluate_masks(dataset, all_boxes, all_segms, output_dir)
         all_results[dataset.name].update(results[dataset.name])
         logger.info('Evaluating segmentations is done!')
-    if cfg.MODEL.KEYPOINTS_ON:
-        results = evaluate_keypoints(dataset, all_boxes, all_keyps, output_dir)
-        all_results[dataset.name].update(results[dataset.name])
-        logger.info('Evaluating keypoints is done!')
     return all_results
-
 
 def evaluate_boxes(dataset, all_boxes, output_dir, use_matlab=False):
     """Evaluate bounding box detection."""
@@ -134,8 +153,8 @@ def evaluate_keypoints(dataset, all_boxes, all_keyps, output_dir):
     """Evaluate human keypoint detection (i.e., 2D pose estimation)."""
     logger.info('Evaluating detections')
     not_comp = not cfg.TEST.COMPETITION_MODE
-    assert dataset.name.startswith('keypoints_coco_'), \
-        'Only COCO keypoints are currently supported'
+    # assert dataset.name.startswith('keypoints_coco_'), \
+    #     'Only COCO keypoints are currently supported'
     coco_eval = json_dataset_evaluator.evaluate_keypoints(
         dataset,
         all_boxes,
@@ -244,7 +263,7 @@ def check_expected_results(results, atol=0.005, rtol=0.1):
 
 def _use_json_dataset_evaluator(dataset):
     """Check if the dataset uses the general json dataset evaluator."""
-    return dataset.name.find('coco_') > -1 or cfg.TEST.FORCE_JSON_DATASET_EVAL
+    return dataset.name.find('coco_') > -1 or dataset.name.find('crowd') > -1 or cfg.TEST.FORCE_JSON_DATASET_EVAL
 
 
 def _use_cityscapes_evaluator(dataset):

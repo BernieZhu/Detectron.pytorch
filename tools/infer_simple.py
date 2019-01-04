@@ -98,6 +98,9 @@ def main():
     elif args.dataset.startswith("keypoints_coco"):
         dataset = datasets.get_coco_dataset()
         cfg.MODEL.NUM_CLASSES = 2
+    elif args.dataset.startswith("crowd"):
+        dataset = datasets.get_coco_dataset()
+        cfg.MODEL.NUM_CLASSES = 2
     else:
         raise ValueError('Unexpected dataset name: {}'.format(args.dataset))
 
@@ -163,13 +166,13 @@ def main():
             kp_thresh=2
         )
 
-    if args.merge_pdfs and num_images > 1:
-        merge_out_path = '{}/results.pdf'.format(args.output_dir)
-        if os.path.exists(merge_out_path):
-            os.remove(merge_out_path)
-        command = "pdfunite {}/*.pdf {}".format(args.output_dir,
-                                                merge_out_path)
-        subprocess.call(command, shell=True)
+    # if args.merge_pdfs and num_images > 1:
+    #     merge_out_path = '{}/results.pdf'.format(args.output_dir)
+    #     if os.path.exists(merge_out_path):
+    #         os.remove(merge_out_path)
+    #     command = "pdfunite {}/*.pdf {}".format(args.output_dir,
+    #                                             merge_out_path)
+    #     subprocess.call(command, shell=True)
 
 
 if __name__ == '__main__':

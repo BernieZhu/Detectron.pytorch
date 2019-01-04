@@ -107,7 +107,7 @@ def get_class_string(class_index, score, dataset):
 def vis_one_image(
         im, im_name, output_dir, boxes, segms=None, keypoints=None, thresh=0.9,
         kp_thresh=2, dpi=200, box_alpha=0.0, dataset=None, show_class=False,
-        ext='pdf'):
+        ext='jpg'):
     """Visual debugging of detections."""
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -147,7 +147,7 @@ def vis_one_image(
         if score < thresh:
             continue
 
-        print(dataset.classes[classes[i]], score)
+        # print(dataset.classes[classes[i]], score)
         # show box (off by default, box_alpha=0.0)
         ax.add_patch(
             plt.Rectangle((bbox[0], bbox[1]),

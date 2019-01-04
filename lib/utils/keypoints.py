@@ -51,8 +51,8 @@ def get_keypoints():
         'right_ankle'
     ]
     keypoint_flip_map = {
-        'left_eye': 'right_eye',
-        'left_ear': 'right_ear',
+        # 'left_eye': 'right_eye',
+        # 'left_ear': 'right_ear',
         'left_shoulder': 'right_shoulder',
         'left_elbow': 'right_elbow',
         'left_wrist': 'right_wrist',

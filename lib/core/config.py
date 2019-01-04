@@ -434,7 +434,7 @@ __C.MODEL.MASK_ON = False
 
 # Indicates the model makes keypoint predictions (as in Mask R-CNN for
 # keypoints)
-__C.MODEL.KEYPOINTS_ON = False
+__C.MODEL.KEYPOINTS_ON = True
 
 # Indicates the model's computation terminates with the production of RPN
 # proposals (i.e., it outputs proposals ONLY, no actual object detections)

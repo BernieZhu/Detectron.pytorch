@@ -216,11 +216,12 @@ class JsonDataset(object):
         height = entry['height']
         for obj in objs:
             # crowd regions are RLE encoded and stored as dicts
-            if isinstance(obj['segmentation'], list):
-                # Valid polygons have >= 3 points, so require >= 6 coordinates
-                obj['segmentation'] = [
-                    p for p in obj['segmentation'] if len(p) >= 6
-                ]
+            # if isinstance(obj['segmentation'], list):
+            #     # Valid polygons have >= 3 points, so require >= 6 coordinates
+            #     obj['segmentation'] = [
+            #         p for p in obj['segmentation'] if len(p) >= 6
+            #     ]
+            obj['area'] = obj['bbox'][2] * obj['bbox'][3] * 0.53
             if obj['area'] < cfg.TRAIN.GT_MIN_AREA:
                 continue
             if 'ignore' in obj and obj['ignore'] == 1:
@@ -234,7 +235,7 @@ class JsonDataset(object):
             if obj['area'] > 0 and x2 > x1 and y2 > y1:
                 obj['clean_bbox'] = [x1, y1, x2, y2]
                 valid_objs.append(obj)
-                valid_segms.append(obj['segmentation'])
+                # valid_segms.append(obj['segmentation'])
         num_valid_objs = len(valid_objs)
 
         boxes = np.zeros((num_valid_objs, 4), dtype=entry['boxes'].dtype)
@@ -381,8 +382,6 @@ class JsonDataset(object):
             else:
                 cfg.KRCNN.NUM_KEYPOINTS = self.num_keypoints
             self.keypoint_flip_map = {
-                'left_eye': 'right_eye',
-                'left_ear': 'right_ear',
                 'left_shoulder': 'right_shoulder',
                 'left_elbow': 'right_elbow',
                 'left_wrist': 'right_wrist',

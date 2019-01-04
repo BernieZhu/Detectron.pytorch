@@ -159,6 +159,8 @@ def load_ckpt(model, ckpt):
     state_dict = {}
     for name in ckpt:
         if mapping[name]:
+            if name == 'Keypoint_Outs.classify.weight' or 'Keypoint_Outs.classify.bias':
+                continue
             state_dict[name] = ckpt[name]
     model.load_state_dict(state_dict, strict=False)
 
